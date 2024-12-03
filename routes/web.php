@@ -23,11 +23,11 @@ Route::middleware('auth')->group(function () {
 
     // Routes untuk User (Petugas Security)
     Route::prefix('absensi')->group(function () {
-        Route::get('/', [AbsensiController::class, 'index'])->name('absensi.index'); // Menampilkan daftar absensi user
-        Route::get('/create', [AbsensiController::class, 'create'])->name('absensi.create'); // Menampilkan form absensi masuk
-        Route::post('/', [AbsensiController::class, 'store'])->name('absensi.store'); // Menyimpan data absensi masuk
-        Route::get('/{absensi}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit'); // Menampilkan form absensi keluar
-        Route::patch('/{absensi}', [AbsensiController::class, 'update'])->name('absensi.update'); // Menyimpan data absensi keluar
+        Route::get('/', [AbsensiController::class, 'index'])->name('absensi.index');
+        Route::get('/create', [AbsensiController::class, 'create'])->name('absensi.create'); 
+        Route::post('/', [AbsensiController::class, 'store'])->name('absensi.store'); 
+        Route::get('/{absensi}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit'); 
+        Route::patch('/{absensi}', [AbsensiController::class, 'update'])->name('absensi.update'); 
     });
 
     // Routes untuk Admin
@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
         })->name('admin.dashboard');
 
         // Absensi Routes untuk Admin
-        Route::get('/data-absensi/data', [AbsensiController::class, 'getAbsensi'])->name('admin.data-absensi'); // Rute untuk mendapatkan data absensi
+        Route::get('/data-absensi/data', [AbsensiController::class, 'getAbsensi'])->name('admin.data-absensi'); 
 
         // Resource Route untuk Absensi Admin (CRUD)
         Route::resource('/data-absensi', AbsensiController::class)->except(['create', 'edit']);
