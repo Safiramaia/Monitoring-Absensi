@@ -4,42 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Absensi;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-use App\Models\Absensi;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Auth;
-=======
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
->>>>>>> 265ba4e75b1291db4c2d1b59534719822ae27df9
+use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
-<<<<<<< HEAD
-        return view('admin.data-absensi');
-    }
-    public function data()
-{
-    $absensi = Absensi::select(['id', 'user_id', 'waktu_masuk', 'waktu_keluar', 'status']); // Ambil kolom yang diperlukan
-
-    return DataTables::of($absensi)
-        ->addIndexColumn() // Tambahkan nomor baris secara otomatis
-        ->addColumn('aksi', function ($row) {
-            return '
-                <button class="btn btn-sm btn-primary">Edit</button>
-                <button class="btn btn-sm btn-danger">Hapus</button>
-            '; // Kolom untuk aksi
-        })
-        ->rawColumns(['aksi']) // Pastikan kolom "aksi" dirender sebagai HTML
-        ->make(true);
-}
-
-
-
-=======
         // Ambil absensi berdasarkan user yang sedang login
         $absensis = Absensi::where('user_id', Auth::id())->get();
 
@@ -114,6 +88,67 @@ class AbsensiController extends Controller
 
         return redirect()->route('absensi.index')->with('success', 'Data absensi berhasil disimpan!');
     }
->>>>>>> 265ba4e75b1291db4c2d1b59534719822ae27df9
-}
 
+    public function indexAdmin()
+    {
+        return view('admin.data-absensi');
+    }
+
+    public function data()
+    {
+        // Ambil data absensi dengan relasi user
+        $absensi = Absensi::select(['id', 'user_id', 'waktu_masuk', 'status', 'foto_pagar_depan', 'foto_ruang_tengah', 'foto_lorong_lab', 'foto_pagar_belakang'])
+            ->with('user'); // tambahkan relasi dengan model User
+
+        return DataTables::of($absensi)
+            ->addIndexColumn() // Tambahkan nomor baris secara otomatis
+            ->addColumn('name', function ($row) {
+                return $row->user->name; // tampilkan nama karyawan
+            })
+            ->addColumn('waktu_masuk', function ($row) {
+                return Carbon::parse($row->waktu_masuk)->format('d-m-Y H:i:s'); // format tanggal
+            })
+            ->addColumn('foto_pagar_depan', function ($row) {
+                return '<img src="' . asset($row->foto_pagar_depan) . '" alt="Foto Pagar Depan" width="50" height="50">';
+            })
+            ->addColumn('foto_ruang_tengah', function ($row) {
+                return '<img src="' . asset($row->foto_ruang_tengah) . '" alt="Foto Ruang Tengah" width="50" height="50">';
+            })
+            ->addColumn('foto_lorong_lab', function ($row) {
+                return '<img src="' . asset($row->foto_lorong_lab) . '" alt="Foto Lorong Lab" width="50" height="50">';
+            })
+            ->addColumn('foto_pagar_belakang', function ($row) {
+                return '<img src="' . asset($row->foto_pagar_belakang) . '" alt="Foto Pagar Belakang" width="50" height="50">';
+            })
+            ->addColumn('status', function ($row) {
+                return $row->status; // Tampilkan status kehadiran
+            })
+            ->addColumn('aksi', function ($row) {
+                return '
+                <button class="btn btn-sm btn-success" onclick="updateStatus(' . $row->id . ', \'verifikasi\')">Diverifikasi</button>
+                <button class="btn btn-sm btn-warning" onclick="updateStatus(' . $row->id . ', \'tidak_valid\')">Tidak Valid</button>
+            '; // Kolom untuk aksi
+            })
+            ->rawColumns(['foto_pagar_depan', 'foto_ruang_tengah', 'foto_lorong_lab', 'foto_pagar_belakang', 'aksi']) 
+            ->make(true); // Kembalikan data dalam format JSON
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:absensis,id',
+            'status' => 'required|in:diverifikasi,tidak valid',
+        ]);
+    
+        $absensi = Absensi::find($request->id);
+    
+        if ($absensi) {
+            $absensi->status = $request->status;
+            $absensi->save();
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['success' => false, 'message' => 'Data absensi tidak ditemukan.']);
+    }
+    
+}
