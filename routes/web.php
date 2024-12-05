@@ -24,10 +24,10 @@ Route::middleware('auth')->group(function () {
     // Routes untuk User (Petugas Security)
     Route::prefix('absensi')->group(function () {
         Route::get('/', [AbsensiController::class, 'index'])->name('absensi.index');
-        Route::get('/create', [AbsensiController::class, 'create'])->name('absensi.create'); 
-        Route::post('/', [AbsensiController::class, 'store'])->name('absensi.store'); 
-        Route::get('/{absensi}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit'); 
-        Route::patch('/{absensi}', [AbsensiController::class, 'update'])->name('absensi.update'); 
+        Route::get('/create', [AbsensiController::class, 'create'])->name('absensi.create');
+        Route::post('/', [AbsensiController::class, 'store'])->name('absensi.store');
+        Route::get('/{absensi}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit');
+        Route::patch('/{absensi}', [AbsensiController::class, 'update'])->name('absensi.update');
     });
 
     // Routes untuk Admin
@@ -37,11 +37,13 @@ Route::middleware('auth')->group(function () {
             return view('admin.dashboard');
         })->name('admin.dashboard');
 
-        // Absensi Routes untuk Admin
-        Route::get('/data-absensi/data', [AbsensiController::class, 'getAbsensi'])->name('admin.data-absensi'); 
+        Route::get('/data-absensi', [AbsensiController::class, 'index'])->name('admin.data-absensi');
+        Route::post('/data-absensi', [AbsensiController::class, 'store'])->name('admin.data-absensi.store');
+        Route::put('/data-absensi/{id}', [AbsensiController::class, 'update'])->name('admin.data-absensi.update');
+        Route::delete('/data-absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.data-absensi.destroy');
+        Route::get('/data-absensi/data', [AbsensiController::class, 'data'])->name('admin.data-absensi.data');
 
-        // Resource Route untuk Absensi Admin (CRUD)
-        Route::resource('/data-absensi', AbsensiController::class)->except(['create', 'edit']);
+        
 
         // Data Pengguna (User Management) untuk Admin
         Route::get('/data-pengguna', [UserController::class, 'index'])->name('admin.data-pengguna');
@@ -51,4 +53,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
