@@ -26,9 +26,6 @@ class Absensi extends Model
         'status',
     ];
 
-    // Kolom yang seharusnya tidak diubah
-    protected $guarded = [];
-
     // Tipe data untuk kolom waktu
     protected $casts = [
         'waktu_masuk' => 'datetime',
