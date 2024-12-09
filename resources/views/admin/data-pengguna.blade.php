@@ -25,8 +25,8 @@
                             <td>{{ $user->role }}</td>
                             <td>{{ $user->is_active ? 'Aktif' : 'Tidak Aktif' }}</td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-primary">Edit</button>
-                                <button class="btn btn-sm btn-danger">Hapus</button>
+                                <!-- <button class="btn btn-sm btn-primary">Edit</button> -->
+                                <button class="btn btn-sm btn-danger" onclick="deleteUser ({{ $user->id }})">Hapus</button>
                             </td>
                         </tr>
                     @endforeach
@@ -41,5 +41,27 @@
         $(document).ready(function() {
             $('#data-pengguna').DataTable();
         });
+        function deleteUser (id) {
+        if (confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
+            $.ajax({
+                url: '{{ url('/data-pengguna') }}/' + id,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $('#data-pengguna').DataTable().ajax.reload(); // Refresh DataTable
+                    } else {
+                        alert('Terjadi kesalahan: ' + response.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Terjadi kesalahan saat menghapus pengguna.');
+                }
+            });
+        }
+    }
     </script>
 </x-app-layout>

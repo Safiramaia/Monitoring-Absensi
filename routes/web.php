@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/absensi/update-status', [AbsensiController::class, 'updateStatus'])->name('admin.absensi.update-status');
 
         Route::get('/data-pengguna', [UserController::class, 'index'])->name('admin.data-pengguna');
+        // web.php
+        Route::delete('/data-pengguna/{id}', [UserController::class, 'destroy'])->name('admin.data-pengguna.destroy');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
     });
 });
