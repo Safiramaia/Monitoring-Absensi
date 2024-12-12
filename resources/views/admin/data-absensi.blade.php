@@ -42,8 +42,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('admin.data-absensi.data') }}',
-                columns: [
-                    {
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
@@ -87,31 +86,44 @@
             });
         });
 
+        // Fungsi untuk mengubah status absensi
         function updateStatus(id, status) {
             fetch("{{ route('admin.absensi.update-status') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    id: id,
-                    status: status
+                    method: 'POST', // Correct the method to POST
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        status: status
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Status berhasil diperbarui');
-                    $('#data-absensi').DataTable().ajax.reload(); // Refresh DataTable
-                } else {
-                    alert('Terjadi kesalahan: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Terjadi kesalahan:', error);
-                alert('Terjadi kesalahan saat memperbarui status.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data) {
+                        // Swal.fire({
+                        //     title: 'Berhasil!',
+                        //     text: 'Status berhasil diperbarui',
+                        //     icon: 'success',
+                        //     confirmButtonText: 'OK'
+                        // }).then(() => {
+                        $('#data-absensi').DataTable().ajax.reload(); // Muat ulang DataTable
+                        // });
+                    } else {
+                        // Swal.fire({
+                        //     title: 'Gagal!',
+                        //     text: data.message,
+                        //     icon: 'error',
+                        //     confirmButtonText: 'OK'
+                        // });
+                    }
+                })
+                .catch(xhr => {
+                    console.error('Terjadi kesalahan:', xhr);
+                    alert('Terjadi kesalahan saat memperbarui status.');
+                });
         }
     </script>
 </x-app-layout>

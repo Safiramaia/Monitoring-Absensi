@@ -94,61 +94,90 @@ class AbsensiController extends Controller
         return view('admin.data-absensi');
     }
 
+    // AbsensiController.php
     public function data()
     {
         // Ambil data absensi dengan relasi user
-        $absensi = Absensi::select(['id', 'user_id', 'waktu_masuk', 'status', 'foto_pagar_depan', 'foto_ruang_tengah', 'foto_lorong_lab', 'foto_pagar_belakang'])
-            ->with('user'); // tambahkan relasi dengan model User
+        $absensi = Absensi::select([
+            'id',
+            'user_id',
+            'waktu_masuk',
+            'status',
+            'foto_pagar_depan',
+            'foto_ruang_tengah',
+            'foto_lorong_lab',
+            'foto_pagar_belakang'
+        ])
+            ->with('user'); // Menambahkan relasi dengan model User
 
         return DataTables::of($absensi)
-            ->addIndexColumn() // Tambahkan nomor baris secara otomatis
+            ->addIndexColumn() // Menambahkan nomor baris secara otomatis
             ->addColumn('name', function ($row) {
-                return $row->user->name; // tampilkan nama karyawan
+                return $row->user ? $row->user->name : 'N/A';
             })
             ->addColumn('waktu_masuk', function ($row) {
-                return Carbon::parse($row->waktu_masuk)->format('d-m-Y H:i:s'); // format tanggal
+                return Carbon::parse($row->waktu_masuk)->format('d-m-Y H:i:s');
             })
             ->addColumn('foto_pagar_depan', function ($row) {
-                return '<img src="' . asset($row->foto_pagar_depan) . '" alt="Foto Pagar Depan" width="50" height="50">';
+                return $row->foto_pagar_depan ?
+                    '<img src="' . asset($row->foto_pagar_depan) . '" alt="Foto Pagar Depan" width="50" height="50">' :
+                    '<span>Foto Tidak Tersedia</span>';
             })
             ->addColumn('foto_ruang_tengah', function ($row) {
-                return '<img src="' . asset($row->foto_ruang_tengah) . '" alt="Foto Ruang Tengah" width="50" height="50">';
+                return $row->foto_ruang_tengah ?
+                    '<img src="' . asset($row->foto_ruang_tengah) . '" alt="Foto Ruang Tengah" width="50" height="50">' :
+                    '<span>Foto Tidak Tersedia</span>';
             })
             ->addColumn('foto_lorong_lab', function ($row) {
-                return '<img src="' . asset($row->foto_lorong_lab) . '" alt="Foto Lorong Lab" width="50" height="50">';
+                return $row->foto_lorong_lab ?
+                    '<img src="' . asset($row->foto_lorong_lab) . '" alt="Foto Lorong Lab" width="50" height="50">' :
+                    '<span>Foto Tidak Tersedia</span>';
             })
             ->addColumn('foto_pagar_belakang', function ($row) {
-                return '<img src="' . asset($row->foto_pagar_belakang) . '" alt="Foto Pagar Belakang" width="50" height="50">';
+                return $row->foto_pagar_belakang ?
+                    '<img src="' . asset($row->foto_pagar_belakang) . '" alt="Foto Pagar Belakang" width="50" height="50">' :
+                    '<span>Foto Tidak Tersedia</span>';
             })
             ->addColumn('status', function ($row) {
-                return $row->status; // Tampilkan status kehadiran
+                return ucfirst($row->status);
             })
             ->addColumn('aksi', function ($row) {
                 return '
-                <button class="btn btn-sm btn-success" onclick="updateStatus(' . $row->id . ', \'verifikasi\')">Diverifikasi</button>
-                <button class="btn btn-sm btn-warning" onclick="updateStatus(' . $row->id . ', \'tidak_valid\')">Tidak Valid</button>
-            '; // Kolom untuk aksi
+            <button class="btn btn-sm btn-success" onclick="updateStatus(' . $row->id . ', \'verifikasi\')">Diverifikasi</button>
+            <button class="btn btn-sm btn-warning" onclick="updateStatus(' . $row->id . ', \'tidak_valid\')">Tidak Valid</button>
+        ';
             })
-            ->rawColumns(['foto_pagar_depan', 'foto_ruang_tengah', 'foto_lorong_lab', 'foto_pagar_belakang', 'aksi']) 
-            ->make(true); // Kembalikan data dalam format JSON
+            ->rawColumns(['foto_pagar_depan', 'foto_ruang_tengah', 'foto_lorong_lab', 'foto_pagar_belakang', 'aksi'])
+            ->make(true);
     }
 
     public function updateStatus(Request $request)
     {
-        $request->validate([
-            'id' => 'required|exists:absensis,id',
-            'status' => 'required|in:diverifikasi,tidak valid',
-        ]);
-    
+        // Validasi input
+        // $request->validate([
+        //     'id' => 'required',
+        //     'status' => 'required',
+        // ]);
+
+        // Cari data absensi berdasarkan ID
         $absensi = Absensi::find($request->id);
-    
+
         if ($absensi) {
-            $absensi->status = $request->status;
-            $absensi->save();
+            // Perbarui status absensi
+            if ($request->status == 'verifikasi') {
+                $absensi->status = 'diverifikasi';
+            } else {
+                $absensi->status = 'tidak valid';
+            }
+            $absensi->save();  // Simpan perubahan
+
+            // Respons sukses
             return response()->json(['success' => true]);
         }
-    
-        return response()->json(['success' => false, 'message' => 'Data absensi tidak ditemukan.']);
+
+        // // Jika absensi tidak ditemukan
+        return response()->json([
+            'success' => false,
+        ]);
     }
-    
 }

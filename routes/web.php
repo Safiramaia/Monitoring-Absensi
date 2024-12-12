@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/data-absensi', [AbsensiController::class, 'store'])->name('admin.data-absensi.store');
         Route::put('/data-absensi/{id}', [AbsensiController::class, 'update'])->name('admin.data-absensi.update');
         Route::delete('/data-absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.data-absensi.destroy');
-        Route::post('/admin/absensi/update-status', [AbsensiController::class, 'updateStatus'])->name('admin.absensi.update-status');
+        Route::post('/update-status', [AbsensiController::class, 'updateStatus'])->name('admin.absensi.update-status');  // Ensure this is POST
 
         Route::get('/data-pengguna', [UserController::class, 'index'])->name('admin.data-pengguna');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan');

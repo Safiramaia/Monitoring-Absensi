@@ -1,31 +1,41 @@
 <x-app-layout>
     <div class="flex justify-center items-center min-h-screen mt-2 w-full">
-        <div class="w-full md:w-2/3 border border-gray-300 p-12 rounded-lg bg-white shadow-md dark:bg-gray-800 dark:border-gray-600">
+        <div
+            class="w-full md:w-2/3 border border-gray-300 p-12 rounded-lg bg-white shadow-md dark:bg-gray-800 dark:border-gray-600">
             <h2 class="mb-4 mt-2 text-xl font-bold text-center text-gray-900 dark:text-white">Form Absensi</h2>
 
             <form action="{{ route('absensi.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Stepper Progress -->
-                <div class="flex mb-4 justify-between">
-                    <div class="stepper-step w-1/5 text-center">
-                        <div class="stepper-circle bg-blue-500 text-white mx-auto p-2 rounded-full">1</div>
+                <div class="flex mb-4 justify-between items-center">
+                    <!-- Step 1 -->
+                    <div class="stepper-step w-1/8 text-center relative">
+                        <div class="stepper-circle bg-blue-500 text-white mx-auto p-1.5 rounded-full text-sm">1</div>
                         <p class="mt-2 text-sm">Waktu Masuk</p>
                     </div>
-                    <div class="stepper-step w-1/5 text-center">
-                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-2 rounded-full">2</div>
+
+                    <!-- Step 2 -->
+                    <div class="stepper-step w-1/8 text-center relative">
+                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-1.5 rounded-full text-sm">2</div>
                         <p class="mt-2 text-sm">Foto Pagar Depan</p>
                     </div>
-                    <div class="stepper-step w-1/5 text-center">
-                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-2 rounded-full">3</div>
+
+                    <!-- Step 3 -->
+                    <div class="stepper-step w-1/8 text-center relative">
+                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-1.5 rounded-full text-sm">3</div>
                         <p class="mt-2 text-sm">Foto Lorong Lab</p>
                     </div>
-                    <div class="stepper-step w-1/5 text-center">
-                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-2 rounded-full">4</div>
+
+                    <!-- Step 4 -->
+                    <div class="stepper-step w-1/8 text-center relative">
+                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-1.5 rounded-full text-sm">4</div>
                         <p class="mt-2 text-sm">Foto Ruang Tengah</p>
                     </div>
-                    <div class="stepper-step w-1/5 text-center">
-                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-2 rounded-full">5</div>
+
+                    <!-- Step 5 -->
+                    <div class="stepper-step w-1/8 text-center">
+                        <div class="stepper-circle bg-gray-300 text-white mx-auto p-1.5 rounded-full text-sm">5</div>
                         <p class="mt-2 text-sm">Foto Pagar Belakang</p>
                     </div>
                 </div>
@@ -34,41 +44,46 @@
                 <div class="step" id="step-1">
                     <div class="mb-4">
                         <label for="waktu_masuk" class="font-semibold">Waktu Masuk</label>
-                        <input 
-                            type="datetime-local" 
-                            name="waktu_masuk" 
-                            id="waktu_masuk" 
+                        <input type="datetime-local" name="waktu_masuk" id="waktu_masuk"
                             class="w-full p-2 mt-2 border rounded-md"
-                            value="{{ old('waktu_masuk', now('Asia/Jakarta')->format('Y-m-d\TH:i')) }}" 
-                            required
-                        >
+                            value="{{ old('waktu_masuk', now('Asia/Jakarta')->format('Y-m-d\TH:i')) }}" required>
                     </div>
-                                       
+
                     <div class="mb-4">
                         <label for="latitude" class="font-semibold">Latitude</label>
-                        <input type="text" name="latitude" id="latitude" class="w-full p-2 mt-2 border rounded-md" required readonly>
+                        <input type="text" name="latitude" id="latitude" class="w-full p-2 mt-2 border rounded-md"
+                            required readonly>
                     </div>
                     <div class="mb-4">
                         <label for="longitude" class="font-semibold">Longitude</label>
-                        <input type="text" name="longitude" id="longitude" class="w-full p-2 mt-2 border rounded-md" required readonly>
+                        <input type="text" name="longitude" id="longitude" class="w-full p-2 mt-2 border rounded-md"
+                            required readonly>
                     </div>
                 </div>
 
-                <!-- Step 2: Foto Pagar Depan -->
-                <div class="step" id="step-2" style="display: none;">
+                <!-- Foto Pagar Depan -->
+                <div class="step" id="step-2">
                     <div class="mb-4">
                         <label for="foto_pagar_depan" class="font-semibold">Foto Pagar Depan</label>
                         <div class="mt-2 p-2 bg-white rounded-md flex-shrink-0">
-                            <video id="video_pagar_depan" width="100%" class="border-none mt-3 bg-white px-4 md:px-0" style="max-height: 300px;">
+                            <video id="video_pagar_depan" width="100%" class="border-none mt-3 bg-white px-4 md:px-0"
+                                style="max-height: 300px;">
                                 Browser tidak mendukung tag video.
                             </video>
-                            <canvas id="canvas_pagar_depan" class="mt-3 w-full px-4" style="display:none; max-height: 300px;"></canvas>
+                            <canvas id="canvas_pagar_depan" class="mt-3 w-full px-4"
+                                style="display:none; max-height: 300px;"></canvas>
                             <input type="hidden" name="foto_pagar_depan" id="foto_pagar_depan">
+                            <input type="hidden" name="latitude" id="latitude_pagar_depan">
+                            <input type="hidden" name="longitude" id="longitude_pagar_depan">
+                            <input type="hidden" name="timestamp" id="timestamp_pagar_depan">
                             <div class="flex flex-col gap-2 mt-2">
-                                <button type="button" id="takePhoto_pagar_depan" class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
+                                <button type="button" id="takePhoto_pagar_depan"
+                                    class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
                                     Ambil Foto
                                 </button>
-                                <button type="button" id="retakePhoto_pagar_depan" class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold" style="display:none;">
+                                <button type="button" id="retakePhoto_pagar_depan"
+                                    class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold"
+                                    style="display:none;">
                                     Ulangi Foto
                                 </button>
                             </div>
@@ -76,21 +91,29 @@
                     </div>
                 </div>
 
-                <!-- Step 3: Foto Lorong Lab -->
-                <div class="step" id="step-3" style="display: none;">
+                <!-- Foto Lorong Lab -->
+                <div class="step" id="step-3">
                     <div class="mb-4">
                         <label for="foto_lorong_lab" class="font-semibold">Foto Lorong Lab</label>
                         <div class="mt-2 p-2 bg-white rounded-md flex-shrink-0">
-                            <video id="video_lorong_lab" width="100%" class="border-none mt-3 bg-white px-4 md:px-0" style="max-height: 300px;">
+                            <video id="video_lorong_lab" width="100%" class="border-none mt-3 bg-white px-4 md:px-0"
+                                style="max-height: 300px;">
                                 Browser tidak mendukung tag video.
                             </video>
-                            <canvas id="canvas_lorong_lab" class="mt-3 w-full px-4" style="display:none; max-height: 300px;"></canvas>
+                            <canvas id="canvas_lorong_lab" class="mt-3 w-full px-4"
+                                style="display:none; max-height: 300px;"></canvas>
                             <input type="hidden" name="foto_lorong_lab" id="foto_lorong_lab">
+                            <input type="hidden" name="latitude" id="latitude_lorong_lab">
+                            <input type="hidden" name="longitude" id="longitude_lorong_lab">
+                            <input type="hidden" name="timestamp" id="timestamp_lorong_lab">
                             <div class="flex flex-col gap-2 mt-2">
-                                <button type="button" id="takePhoto_lorong_lab" class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
+                                <button type="button" id="takePhoto_lorong_lab"
+                                    class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
                                     Ambil Foto
                                 </button>
-                                <button type="button" id="retakePhoto_lorong_lab" class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold" style="display:none;">
+                                <button type="button" id="retakePhoto_lorong_lab"
+                                    class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold"
+                                    style="display:none;">
                                     Ulangi Foto
                                 </button>
                             </div>
@@ -103,16 +126,24 @@
                     <div class="mb-4">
                         <label for="foto_ruang_tengah" class="font-semibold">Foto Ruang Tengah</label>
                         <div class="mt-2 p-2 bg-white rounded-md flex-shrink-0">
-                            <video id="video_ruang_tengah" width="100%" class="border-none mt-3 bg-white px-4 md:px-0" style="max-height: 300px;">
+                            <video id="video_ruang_tengah" width="100%"
+                                class="border-none mt-3 bg-white px-4 md:px-0" style="max-height: 300px;">
                                 Browser tidak mendukung tag video.
                             </video>
-                            <canvas id="canvas_ruang_tengah" class="mt-3 w-full px-4" style="display:none; max-height: 300px;"></canvas>
+                            <canvas id="canvas_ruang_tengah" class="mt-3 w-full px-4"
+                                style="display:none; max-height: 300px;"></canvas>
                             <input type="hidden" name="foto_ruang_tengah" id="foto_ruang_tengah">
+                            <input type="hidden" name="latitude" id="latitude_pagar_depan">
+                            <input type="hidden" name="longitude" id="longitude_pagar_depan">
+                            <input type="hidden" name="timestamp" id="timestamp_ruang_tengah">
                             <div class="flex flex-col gap-2 mt-2">
-                                <button type="button" id="takePhoto_ruang_tengah" class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
+                                <button type="button" id="takePhoto_ruang_tengah"
+                                    class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
                                     Ambil Foto
                                 </button>
-                                <button type="button" id="retakePhoto_ruang_tengah" class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold" style="display:none;">
+                                <button type="button" id="retakePhoto_ruang_tengah"
+                                    class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold"
+                                    style="display:none;">
                                     Ulangi Foto
                                 </button>
                             </div>
@@ -125,16 +156,24 @@
                     <div class="mb-4">
                         <label for="foto_pagar_belakang" class="font-semibold">Foto Pagar Belakang</label>
                         <div class="mt-2 p-2 bg-white rounded-md flex-shrink-0">
-                            <video id="video_pagar_belakang" width="100%" class="border-none mt-3 bg-white px-4 md:px-0" style="max-height: 300px;">
+                            <video id="video_pagar_belakang" width="100%"
+                                class="border-none mt-3 bg-white px-4 md:px-0" style="max-height: 300px;">
                                 Browser tidak mendukung tag video.
                             </video>
-                            <canvas id="canvas_pagar_belakang" class="mt-3 w-full px-4" style="display:none; max-height: 300px;"></canvas>
+                            <canvas id="canvas_pagar_belakang" class="mt-3 w-full px-4"
+                                style="display:none; max-height: 300px;"></canvas>
                             <input type="hidden" name="foto_pagar_belakang" id="foto_pagar_belakang">
+                            <input type="hidden" name="latitude" id="latitude_pagar_depan">
+                            <input type="hidden" name="longitude" id="longitude_pagar_depan">
+                            <input type="hidden" name="timestamp" id="timestamp_pagar_belakang">
                             <div class="flex flex-col gap-2 mt-2">
-                                <button type="button" id="takePhoto_pagar_belakang" class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
+                                <button type="button" id="takePhoto_pagar_belakang"
+                                    class="mx-4 my-2 py-2 bg-[#3490dc] text-white rounded-sm font-semibold">
                                     Ambil Foto
                                 </button>
-                                <button type="button" id="retakePhoto_pagar_belakang" class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold" style="display:none;">
+                                <button type="button" id="retakePhoto_pagar_belakang"
+                                    class="mx-4 my-2 py-2 bg-[#FF5733] text-white rounded-sm font-semibold"
+                                    style="display:none;">
                                     Ulangi Foto
                                 </button>
                             </div>
@@ -144,9 +183,14 @@
 
                 <!-- Step Navigation Buttons -->
                 <div class="flex justify-between mt-6">
-                    <button type="button" id="prevButton" class="px-4 py-2 bg-gray-300 text-white rounded-sm font-semibold" style="display: none;">Kembali</button>
-                    <button type="button" id="nextButton" class="px-4 py-2 bg-blue-500 text-white rounded-sm font-semibold">Lanjutkan</button>
-                    <button type="submit" id="submitButton" class="px-4 py-2 bg-green-500 text-white rounded-sm font-semibold" style="display: none;">Kirim</button>
+                    <button type="button" id="prevButton"
+                        class="px-4 py-2 bg-gray-300 text-white rounded-sm font-semibold"
+                        style="display: none;">Kembali</button>
+                    <button type="button" id="nextButton"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-sm font-semibold">Lanjutkan</button>
+                    <button type="submit" id="submitButton"
+                        class="px-4 py-2 bg-green-500 text-white rounded-sm font-semibold"
+                        style="display: none;">Kirim</button>
                 </div>
             </form>
         </div>
@@ -197,7 +241,9 @@
         // Fungsi untuk mengatur kamera
         async function setupCamera(videoElement) {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true
+                });
                 videoElement.srcObject = stream;
                 videoElement.play();
             } catch (error) {
@@ -205,10 +251,14 @@
             }
         }
 
-        // Fungsi untuk mengambil foto
-        function takePhoto(videoElement, canvasElement, fotoInput, retakeButton) {
+        //Fungsi untuk mengambil foto
+        function takePhoto(videoElement, canvasElement, fotoInput, retakeButton, latitudeInput, longitudeInput,
+            timestampInput) {
             const context = canvasElement.getContext('2d');
-            canvasElement.style.display = 'block'; // Menampilkan canvas
+            const timestamp = new Date().toISOString();
+
+            // Menampilkan canvas dan mengatur ukurannya sesuai video
+            canvasElement.style.display = 'block';
             canvasElement.width = videoElement.videoWidth;
             canvasElement.height = videoElement.videoHeight;
             context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
@@ -216,6 +266,24 @@
             // Menyimpan gambar dalam format base64
             const photoData = canvasElement.toDataURL('image/png');
             fotoInput.value = photoData; // Menyimpan foto di input hidden
+            timestampInput.value = timestamp; // Menyimpan timestamp pada hidden input
+
+            // Mengambil geolokasi jika diizinkan
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    latitudeInput.value = latitude; // Menyimpan latitude
+                    longitudeInput.value = longitude; // Menyimpan longitude
+                }, function(error) {
+                    // Handle error jika geolokasi gagal
+                    console.warn('Geolocation failed', error);
+                    latitudeInput.value = 'unknown';
+                    longitudeInput.value = 'unknown';
+                });
+            } else {
+                console.warn('Geolocation is not supported by this browser');
+            }
 
             // Menampilkan tombol "Ulangi Foto"
             videoElement.style.display = 'none';
@@ -240,16 +308,44 @@
         Object.values(videoElements).forEach(videoElement => setupCamera(videoElement));
 
         // Mengambil foto untuk setiap elemen
-        document.getElementById('takePhoto_pagar_depan').addEventListener('click', () => takePhoto(videoElements.pagarDepan, document.getElementById('canvas_pagar_depan'), document.getElementById('foto_pagar_depan'), document.getElementById('retakePhoto_pagar_depan')));
-        document.getElementById('takePhoto_lorong_lab').addEventListener('click', () => takePhoto(videoElements.lorongLab, document.getElementById('canvas_lorong_lab'), document.getElementById('foto_lorong_lab'), document.getElementById('retakePhoto_lorong_lab')));
-        document.getElementById('takePhoto_ruang_tengah').addEventListener('click', () => takePhoto(videoElements.ruangTengah, document.getElementById('canvas_ruang_tengah'), document.getElementById('foto_ruang_tengah'), document.getElementById('retakePhoto_ruang_tengah')));
-        document.getElementById('takePhoto_pagar_belakang').addEventListener('click', () => takePhoto(videoElements.pagarBelakang, document.getElementById('canvas_pagar_belakang'), document.getElementById('foto_pagar_belakang'), document.getElementById('retakePhoto_pagar_belakang')));
+        document.getElementById('takePhoto_pagar_depan').addEventListener('click', () => takePhoto(videoElements.pagarDepan,
+            document.getElementById('canvas_pagar_depan'), document.getElementById('foto_pagar_depan'), 
+            document.getElementById('latitude_pagar_depan'), document.getElementById('longitude_pagar_depan'), document.getElementById('timestamp_pagar_depan')));
+
+        document.getElementById('takePhoto_lorong_lab').addEventListener('click', () => takePhoto(videoElements.lorongLab,
+            document.getElementById('canvas_lorong_lab'), document.getElementById('foto_lorong_lab'), 
+            document.getElementById('latitude_lorong_lab'), document.getElementById('longitude_lorong_lab'), document.getElementById('timestamp_lorong_lab')));
+
+        document.getElementById('takePhoto_ruang_tengah').addEventListener('click', () => takePhoto(videoElements
+            .ruangTengah, document.getElementById('canvas_ruang_tengah'), document.getElementById(
+                'foto_ruang_tengah'), document.getElementById('latitude_ruang_tengah'), document.getElementById('longitude_ruang_tengah'), 
+                document.getElementById('timestamp_ruang_tengah')));
+
+        document.getElementById('takePhoto_pagar_belakang').addEventListener('click', () => takePhoto(videoElements
+            .pagarBelakang, document.getElementById('canvas_pagar_belakang'), document.getElementById(
+                'foto_pagar_belakang'), document.getElementById('latitude_pagar_belakang'), document.getElementById('longitude_pagar_belakang'), 
+                document.getElementById('timestamp_pagar_belakang')));
 
         // Mengulang foto
-        document.getElementById('retakePhoto_pagar_depan').addEventListener('click', () => retakePhoto(videoElements.pagarDepan, document.getElementById('canvas_pagar_depan'), document.getElementById('retakePhoto_pagar_depan')));
-        document.getElementById('retakePhoto_lorong_lab').addEventListener('click', () => retakePhoto(videoElements.lorongLab, document.getElementById('canvas_lorong_lab'), document.getElementById('retakePhoto_lorong_lab')));
-        document.getElementById('retakePhoto_ruang_tengah').addEventListener('click', () => retakePhoto(videoElements.ruangTengah, document.getElementById('canvas_ruang_tengah'), document.getElementById('retakePhoto_ruang_tengah')));
-        document.getElementById('retakePhoto_pagar_belakang').addEventListener('click', () => retakePhoto(videoElements.pagarBelakang, document.getElementById('canvas_pagar_belakang'), document.getElementById('retakePhoto_pagar_belakang')));
+        document.getElementById('retakePhoto_pagar_depan').addEventListener('click', () => retakePhoto(videoElements
+            .pagarDepan, document.getElementById('canvas_pagar_depan'), document.getElementById('foto_pagar_depan'), 
+            document.getElementById('latitude_pagar_depan'), document.getElementById('longitude_pagar_depan'), document.getElementById(
+                'retakePhoto_pagar_depan')));
+
+        document.getElementById('retakePhoto_lorong_lab').addEventListener('click', () => retakePhoto(videoElements
+            .lorongLab, document.getElementById('canvas_lorong_lab'), document.getElementById('foto_lorong_lab'), 
+            document.getElementById('latitude_lorong_lab'), document.getElementById('longitude_lorong_lab'), document.getElementById(
+                'retakePhoto_lorong_lab')));
+
+        document.getElementById('retakePhoto_ruang_tengah').addEventListener('click', () => retakePhoto(videoElements
+            .ruangTengah, document.getElementById('canvas_ruang_tengah'),  document.getElementById(
+                'foto_ruang_tengah'), document.getElementById('latitude_ruang_tengah'), document.getElementById('longitude_ruang_tengah'), 
+                document.getElementById('retakePhoto_ruang_tengah')));
+
+        document.getElementById('retakePhoto_pagar_belakang').addEventListener('click', () => retakePhoto(videoElements
+            .pagarBelakang, document.getElementById('canvas_pagar_belakang'), document.getElementById(
+                'foto_pagar_belakang'), document.getElementById('latitude_pagar_belakang'), document.getElementById('longitude_pagar_belakang'), 
+                document.getElementById('retakePhoto_pagar_belakang')));
 
         // Enable submit button setelah semua foto diambil
         function enableSubmitButton() {
@@ -266,14 +362,14 @@
         // Mengambil lokasi pengguna dan mengisi input latitude dan longitude
         function getLocationAndSetCoords() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
+                navigator.geolocation.getCurrentPosition(function(position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
 
                     // Mengisi field latitude dan longitude
                     document.getElementById('latitude').value = latitude;
                     document.getElementById('longitude').value = longitude;
-                }, function () {
+                }, function() {
                     alert("Tidak dapat mendeteksi lokasi Anda.");
                 });
             } else {
