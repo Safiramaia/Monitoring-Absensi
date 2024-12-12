@@ -18,8 +18,8 @@
 
                     <!-- Menu Absensi -->
                     <x-nav-link 
-                        :href="auth()->user()->role === 'admin' ? route('admin.data-absensi') : route('absensi.index')" 
-                        :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.data-absensi' : 'absensi.index')">
+                        :href="auth()->user()->role === 'admin' ? route('admin.data-absensi') : route('absensi.add-absensi')" 
+                        :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.data-absensi' : 'absensi.add-absensi')">
                         {{ auth()->user()->role === 'admin' ? __('Data Absensi') : __('Absensi') }}
                     </x-nav-link>
 
@@ -83,8 +83,8 @@
             </x-responsive-nav-link>
 
             <x-responsive-nav-link 
-                :href="auth()->user()->role === 'admin' ? route('admin.data-absensi') : route('absensi.index')" 
-                :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.data-absensi' : 'absensi.index')">
+                :href="auth()->user()->role === 'admin' ? route('admin.data-absensi') : route('absensi.add-absensi')" 
+                :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.data-absensi' : 'absensi.add-absensi')">
                 {{ auth()->user()->role === 'admin' ? __('Data Absensi') : __('Absensi') }}
             </x-responsive-nav-link>
 
