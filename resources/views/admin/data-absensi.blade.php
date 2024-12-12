@@ -4,13 +4,6 @@
     </x-slot>
 
     <main class="px-10 mt-10">
-        <!-- Tombol Tambah Absensi -->
-        <div class="flex justify-end mb-4">
-            <button class="flex items-center gap-1 px-4 py-2 bg-green-700 rounded-md text-white font-medium text-sm"
-                x-data="" x-on:click.prevent="$dispatch('open-modal', 'add-absensi')">
-                Tambah Absensi
-            </button>
-        </div>
 
         <!-- Tabel Data Absensi -->
         <div class="table-container">

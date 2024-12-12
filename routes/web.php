@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('absensi')->group(function () {
         Route::get('/', [AbsensiController::class, 'index'])->name('absensi.index');
         Route::get('/create', [AbsensiController::class, 'create'])->name('absensi.add-absensi');
-        Route::post('/', [AbsensiController::class, 'store'])->name('absensi.store');
+        Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
         Route::get('/{absensi}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit');
         Route::put('/{absensi}', [AbsensiController::class, 'update'])->name('absensi.update');
         Route::delete('/{absensi}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-status', [AbsensiController::class, 'updateStatus'])->name('admin.absensi.update-status');  // Ensure this is POST
 
         Route::get('/data-pengguna', [UserController::class, 'index'])->name('admin.data-pengguna');
+        // web.php
+        Route::delete('/data-pengguna/{id}', [UserController::class, 'destroy'])->name('admin.data-pengguna.destroy');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
     });
 });

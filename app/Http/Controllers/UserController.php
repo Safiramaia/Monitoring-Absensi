@@ -11,8 +11,17 @@ class UserController extends Controller
     {
         // Ambil semua data pengguna
         $users = User::all();
-        
+
         // Kembalikan ke view
         return view('admin.data-pengguna', compact('users'));
+    }
+
+    // UserController.php
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return response()->json(['success' => true, 'message' => 'User  deleted successfully.']);
     }
 }
