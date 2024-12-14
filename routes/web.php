@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AbsensiController::class, 'index'])->name('absensi.index');
         Route::get('/create', [AbsensiController::class, 'create'])->name('absensi.add-absensi');
         Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
+        Route::get('/absensi/data', [AbsensiController::class, 'data'])->name('absensi.data');
         Route::get('/{absensi}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit');
         Route::put('/{absensi}', [AbsensiController::class, 'update'])->name('absensi.update');
         Route::delete('/{absensi}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
@@ -42,7 +43,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/data-absensi/{id}', [AbsensiController::class, 'update'])->name('admin.data-absensi.update');
         Route::delete('/data-absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.data-absensi.destroy');
         Route::post('/update-status', [AbsensiController::class, 'updateStatus'])->name('admin.absensi.update-status');  // Ensure this is POST
-
         Route::get('/data-pengguna', [UserController::class, 'index'])->name('admin.data-pengguna');
         // web.php
         Route::delete('/data-pengguna/{id}', [UserController::class, 'destroy'])->name('admin.data-pengguna.destroy');

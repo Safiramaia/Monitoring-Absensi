@@ -4,7 +4,9 @@
             <h1 class="text-2xl font-bold mb-4">Form Absensi</h1>
             <form method="POST" action="{{ route('absensi.store') }}" enctype="multipart/form-data">
                 @csrf
-
+                <div id="waktu_batas_pagar_depan" class="text-gray-700 mt-2">
+                    Waktu Batas: <span id="waktu_batas_text" class="font-bold">00:00:00</span>
+                </div>
                 <!-- Foto Pagar Depan -->
                 <div class="mb-4">
                     <label for="foto_pagar_depan" class="block text-gray-700 font-medium mb-2">Foto Pagar Depan</label>
@@ -16,9 +18,6 @@
                     <img id="foto_preview_pagar_depan" class="mt-2 w-full h-auto rounded hidden" />
                     <button type="button" id="ulang_foto_pagar_depan"
                         class="bg-gray-500 text-white px-4 py-2 rounded mt-2 hidden">Ulangi Foto</button>
-                    <div id="waktu_batas_pagar_depan" class="text-gray-700 mt-2">
-                        Waktu Batas: <span id="waktu_batas_text" class="font-bold">00:00:00</span>
-                    </div>
                 </div>
 
                 <!-- Foto Pagar Belakang -->
@@ -62,41 +61,58 @@
                         class="bg-gray-500 text-white px-4 py-2 rounded mt-2 hidden">Ulangi Foto</button>
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full">Simpan
-                    Absensi</button>
+                <div class="mb-4 flex justify-between">
+                    <a href="{{ route('absensi.index') }}"
+                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Kembali</a>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Simpan
+                        Absensi</button>
+                </div>
             </form>
         </div>
     </div>
 
     <script>
-        function updateTimeLimit(endTime, elementId, textElementId) {
+        function updateTimeLimit(startTime, endTime, elementId, textElementId) {
             const interval = setInterval(() => {
                 const now = new Date();
-                const remainingTime = endTime - now;
 
-                if (remainingTime <= 0) {
-                    clearInterval(interval);
-                    document.getElementById(elementId).classList.add('text-red-500'); // Ubah warna menjadi merah
-                    document.getElementById(textElementId).textContent = "Waktu Habis";
-                } else {
+                if (now < startTime) {
+                    // Jika waktu sekarang sebelum waktu mulai
+                    const remainingTime = startTime - now;
                     const hours = Math.floor(remainingTime / (1000 * 60 * 60));
                     const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-                    document.getElementById(elementId).classList.remove('text-red-500'); // Kembalikan warna jika waktu masih ada
+                    document.getElementById(elementId).classList.remove('text-red-500');
+                    document.getElementById(textElementId).textContent = `Waktu Mulai: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else if (now >= startTime && now <= endTime) {
+                    // Jika waktu sekarang dalam rentang waktu
+                    const remainingTime = endTime - now;
+                    const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                    document.getElementById(elementId).classList.remove('text-red-500');
                     document.getElementById(textElementId).textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    // Jika waktu sekarang setelah waktu akhir
+                    clearInterval(interval);
+                    document.getElementById(elementId).classList.add('text-red-500');
+                    document.getElementById(textElementId).textContent = "Waktu Habis: 16:00 - 18:00"; // Menampilkan rentang waktu
                 }
             }, 1000);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const startTime = new Date();
+            startTime.setHours(16); // Set batas waktu mulai pada pukul 16:00
+            startTime.setMinutes(0);
+            startTime.setSeconds(0);
+
             const endTime = new Date();
-            endTime.setHours(17); // Set batas waktu pada pukul 17:00
+            endTime.setHours(18); // Set batas waktu akhir pada pukul 18:00
             endTime.setMinutes(0);
             endTime.setSeconds(0);
 
-            updateTimeLimit(endTime, 'waktu_batas_pagar_depan', 'waktu_batas_text');
+            updateTimeLimit(startTime, endTime, 'waktu_batas_pagar_depan', 'waktu_batas_text');
         });
 
         function setupCamera(videoId, canvasId, buttonId, inputId, previewId, ulangiButtonId) {
