@@ -28,53 +28,54 @@
         </div>
     </main>
 
+
     <!-- Script DataTables -->
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#data-absensi').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('admin.data-absensi.data') }}',
                 columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'tanggal',
-                        name: 'tanggal'
-                    },
-                    {
-                        data: 'foto_pagar_depan',
-                        name: 'foto_pagar_depan',
-                    },
-                    {
-                        data: 'foto_ruang_tengah',
-                        name: 'foto_ruang_tengah',
-                    },
-                    {
-                        data: 'foto_lorong_lab',
-                        name: 'foto_lorong_lab',
-                    },
-                    {
-                        data: 'foto_pagar_belakang',
-                        name: 'foto_pagar_belakang',
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
-                    {
-                        data: 'aksi',
-                        name: 'aksi',
-                        orderable: false,
-                        searchable: false
-                    }
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'tanggal',
+                    name: 'tanggal'
+                },
+                {
+                    data: 'foto_pagar_depan',
+                    name: 'foto_pagar_depan',
+                },
+                {
+                    data: 'foto_ruang_tengah',
+                    name: 'foto_ruang_tengah',
+                },
+                {
+                    data: 'foto_lorong_lab',
+                    name: 'foto_lorong_lab',
+                },
+                {
+                    data: 'foto_pagar_belakang',
+                    name: 'foto_pagar_belakang',
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    orderable: false,
+                    searchable: false
+                }
                 ]
             });
         });
@@ -82,16 +83,16 @@
         // Fungsi untuk mengubah status absensi
         function updateStatus(id, status) {
             fetch("{{ route('admin.absensi.update-status') }}", {
-                    method: 'POST', // Correct the method to POST
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        id: id,
-                        status: status
-                    })
+                method: 'POST', // Correct the method to POST
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: status
                 })
+            })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);

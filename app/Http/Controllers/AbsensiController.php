@@ -33,7 +33,7 @@ class AbsensiController extends Controller
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
-
+            'tanggal' => 'required|string',
             'foto_pagar_depan' => 'required|string',
             'foto_lorong_lab' => 'required|string',
             'foto_ruang_tengah' => 'required|string',
@@ -118,6 +118,7 @@ class AbsensiController extends Controller
                     ? "<img src='" . asset($row->foto_pagar_depan) . "' alt='Foto Pagar Depan' class='img-fluid' width='100'>"
                     : '-';
             })
+
             ->addColumn('foto_lorong_lab', function ($row) {
                 return $row->foto_lorong_lab
                     ? "<img src='" . asset($row->foto_lorong_lab) . "' alt='Foto Lorong Lab' class='img-fluid' width='100'>"
@@ -138,8 +139,11 @@ class AbsensiController extends Controller
                     "<input type='hidden' name='_token' value='" . csrf_token() . "'>" .
                     "<input type='hidden' name='_method' value='DELETE'>" .
                     "<button type='submit' class='px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg'>Hapus</button>" .
-                    "</form>";
+                    "</form>" .
+                    "<button class='px-3 py-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg' onclick='updateStatus({$row->id}, \"verifikasi\")'>Verifikasi</button>" .
+                    "<button class='px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg' onclick='updateStatus({$row->id}, \"tidak valid\")'>Tidak Valid</button>";
             })
+
             ->rawColumns([
                 'foto_pagar_depan',
                 'foto_lorong_lab',
