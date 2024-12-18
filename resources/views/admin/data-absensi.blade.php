@@ -46,8 +46,8 @@
                         name: 'name'
                     },
                     {
-                        data: 'waktu_masuk',
-                        name: 'waktu_masuk'
+                        data: 'tanggal',
+                        name: 'tanggal'
                     },
                     {
                         data: 'foto_pagar_depan',

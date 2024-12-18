@@ -24,6 +24,7 @@ class Absensi extends Model
         'latitude',
         'longitude',
         'status',
+        'tanggal',
     ];
 
     // Tipe data untuk kolom waktu

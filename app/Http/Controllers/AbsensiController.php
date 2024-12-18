@@ -33,9 +33,7 @@ class AbsensiController extends Controller
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'waktu_masuk' => 'required|date',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+
             'foto_pagar_depan' => 'required|string',
             'foto_lorong_lab' => 'required|string',
             'foto_ruang_tengah' => 'required|string',
@@ -77,14 +75,12 @@ class AbsensiController extends Controller
         // Menyimpan data absensi ke database
         Absensi::create([
             'user_id' => Auth::id(),
-            'waktu_masuk' => $request->waktu_masuk,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
             'foto_pagar_depan' => $fotoPagarDepanPath,
             'foto_lorong_lab' => $fotoLorongLabPath,
             'foto_ruang_tengah' => $fotoRuangTengahPath,
             'foto_pagar_belakang' => $fotoPagarBelakangPath,
             'status' => 'belum diverifikasi',
+            'tanggal' => now(),
         ]);
 
         return redirect()->route('absensi.index')->with('success', 'Data absensi berhasil disimpan!');
@@ -98,23 +94,62 @@ class AbsensiController extends Controller
 
     public function data()
     {
-        $absensi = Absensi::with('user')->select(['id', 'user_id', 'waktu_masuk', 'status', 'foto_pagar_depan', 'foto_ruang_tengah', 'foto_lorong_lab', 'foto_pagar_belakang']);
+        $absensi = Absensi::with('user')->select([
+            'id',
+            'user_id',
+            'tanggal',
+            'status',
+            'foto_pagar_depan',
+            'foto_ruang_tengah',
+            'foto_lorong_lab',
+            'foto_pagar_belakang'
+        ]);
 
         return DataTables::of($absensi)
             ->addIndexColumn()
             ->addColumn('name', function ($row) {
                 return $row->user ? $row->user->name : 'Tidak Diketahui';
             })
+            ->addColumn('tanggal', function ($row) {
+                return $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '-';
+            })
+            ->addColumn('foto_pagar_depan', function ($row) {
+                return $row->foto_pagar_depan
+                    ? "<img src='" . asset($row->foto_pagar_depan) . "' alt='Foto Pagar Depan' class='img-fluid' width='100'>"
+                    : '-';
+            })
+            ->addColumn('foto_lorong_lab', function ($row) {
+                return $row->foto_lorong_lab
+                    ? "<img src='" . asset($row->foto_lorong_lab) . "' alt='Foto Lorong Lab' class='img-fluid' width='100'>"
+                    : '-';
+            })
+            ->addColumn('foto_ruang_tengah', function ($row) {
+                return $row->foto_ruang_tengah
+                    ? "<img src='" . asset($row->foto_ruang_tengah) . "' alt='Foto Ruang Tengah' class='img-fluid' width='100'>"
+                    : '-';
+            })
+            ->addColumn('foto_pagar_belakang', function ($row) {
+                return $row->foto_pagar_belakang
+                    ? "<img src='" . asset($row->foto_pagar_belakang) . "' alt='Foto Pagar Belakang' class='img-fluid' width='100'>"
+                    : '-';
+            })
             ->addColumn('aksi', function ($row) {
-                return "<form action=\"{{ route('absensi.destroy', $row->id) }}\" method=\"POST\" class=\"inline\">" .
-                    "@csrf" .
-                    "@method('DELETE')" . // Menggunakan tanda kutip tunggal
-                    "<button type=\"submit\" class=\"px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg\">Hapus</button>" .
+                return "<form action='" . route('absensi.destroy', $row->id) . "' method='POST' class='inline'>" .
+                    "<input type='hidden' name='_token' value='" . csrf_token() . "'>" .
+                    "<input type='hidden' name='_method' value='DELETE'>" .
+                    "<button type='submit' class='px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg'>Hapus</button>" .
                     "</form>";
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns([
+                'foto_pagar_depan',
+                'foto_lorong_lab',
+                'foto_ruang_tengah',
+                'foto_pagar_belakang',
+                'aksi'
+            ])
             ->make(true);
     }
+
 
     public function updateStatus(Request $request)
     {
