@@ -60,37 +60,27 @@
                     {
                         data: 'foto_pagar_depan',
                         name: 'foto_pagar_depan',
-                        render: function (data) {
-                            return data ? '<img src="' + data + '" alt="Foto Pagar Depan" class="w-20 h-20 object-cover cursor-pointer" onclick="openImageModal(\'' + data + '\')">' : '-';
-                        }
+
                     },
                     {
                         data: 'foto_ruang_tengah',
                         name: 'foto_ruang_tengah',
-                        render: function (data) {
-                            return data ? '<img src="' + data + '" alt="Foto Ruang Tengah" class="w-20 h-20 object-cover cursor-pointer" onclick="openImageModal(\'' + data + '\')">' : '-';
-                        }
+
                     },
                     {
                         data: 'foto_lorong_lab',
                         name: 'foto_lorong_lab',
-                        render: function (data) {
-                            return data ? '<img src="' + data + '" alt="Foto Lorong Lab" class="w-20 h-20 object-cover cursor-pointer" onclick="openImageModal(\'' + data + '\')">' : '-';
-                        }
+
                     },
                     {
                         data: 'foto_pagar_belakang',
                         name: 'foto_pagar_belakang',
-                        render: function (data) {
-                            return data ? '<img src="' + data + '" alt="Foto Pagar Belakang" class="w-20 h-20 object-cover cursor-pointer" onclick="openImageModal(\'' + data + '\')">' : '-';
-                        }
+
                     },
                     {
                         data: 'status',
                         name: 'status',
-                        render: function (data) {
-                            return '<span class="px-2 py-1 rounded-lg text-white ' + (data === 'Diverifikasi' ? 'bg-green-500' : 'bg-red-500') + '">' + data + '</span>';
-                        }
+
                     },
                     {
                         data: 'aksi',

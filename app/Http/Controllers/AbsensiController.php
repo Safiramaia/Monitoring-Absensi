@@ -33,7 +33,7 @@ class AbsensiController extends Controller
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'tanggal' => 'required|string',
+
             'foto_pagar_depan' => 'required|string',
             'foto_lorong_lab' => 'required|string',
             'foto_ruang_tengah' => 'required|string',
@@ -118,7 +118,6 @@ class AbsensiController extends Controller
                     ? "<img src='" . asset($row->foto_pagar_depan) . "' alt='Foto Pagar Depan' class='img-fluid' width='100'>"
                     : '-';
             })
-
             ->addColumn('foto_lorong_lab', function ($row) {
                 return $row->foto_lorong_lab
                     ? "<img src='" . asset($row->foto_lorong_lab) . "' alt='Foto Lorong Lab' class='img-fluid' width='100'>"
