@@ -66,7 +66,7 @@
                     <img id="foto_preview_ruang_tengah" class="mt-2 w-full h-auto rounded hidden" />
                     <button type="button" id="ulang_foto_ruang_tengah"
                         class="bg-gray-500 text-white px-4 py-2 rounded mt-2 hidden">Ulangi Foto</button>
-                    <button type="button" id="simpan_absensi"
+                    <button type="submit" id="simpan_absensi"
                         class="bg-green-500 text-white px-4 py-2 rounded mt-2 hidden">Simpan Absensi</button>
                 </div>
 

@@ -28,9 +28,7 @@
                         <x-nav-link :href="route('admin.data-pengguna')" :active="request()->routeIs('admin.data-pengguna')">
                             {{ __('Data Pengguna') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.laporan')" :active="request()->routeIs('admin.laporan')">
-                            {{ __('Laporan') }}
-                        </x-nav-link>
+                       
                     @endif
                 </div>
             </div>
@@ -93,9 +91,7 @@
                 <x-responsive-nav-link :href="route('admin.data-pengguna')" :active="request()->routeIs('admin.data-pengguna')">
                     {{ __('Data Pengguna') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.laporan')" :active="request()->routeIs('admin.laporan')">
-                    {{ __('Laporan') }}
-                </x-responsive-nav-link>
+               
             @endif
         </div>
 

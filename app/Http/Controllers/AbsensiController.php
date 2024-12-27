@@ -80,7 +80,7 @@ class AbsensiController extends Controller
             'foto_ruang_tengah' => $fotoRuangTengahPath,
             'foto_pagar_belakang' => $fotoPagarBelakangPath,
             'status' => 'belum diverifikasi',
-            'tanggal' => now(),
+            'tanggal' => Carbon::now(),
         ]);
 
         return redirect()->route('absensi.index')->with('success', 'Data absensi berhasil disimpan!');
@@ -111,7 +111,8 @@ class AbsensiController extends Controller
                 return $row->user ? $row->user->name : 'Tidak Diketahui';
             })
             ->addColumn('tanggal', function ($row) {
-                return $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '-';
+                return Carbon::parse($row->tanggal)->setTimezone('Asia/Jakarta')->format('d-m-Y H:i:s');
+
             })
             ->addColumn('foto_pagar_depan', function ($row) {
                 return $row->foto_pagar_depan

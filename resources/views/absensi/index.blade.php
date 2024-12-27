@@ -55,7 +55,8 @@
                     },
                     {
                         data: 'tanggal',
-                        name: 'tanggal'
+                        name: 'tanggal',
+
                     },
                     {
                         data: 'foto_pagar_depan',
@@ -110,7 +111,7 @@
                                 '</form>';
                         }
                     }
-                ]
+                ],
             });
         });
         function confirmDelete(id) {
