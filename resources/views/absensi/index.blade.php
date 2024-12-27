@@ -80,6 +80,21 @@
                     {
                         data: 'status',
                         name: 'status',
+                        render: function (data, type, row) {
+                            const status = data.toUpperCase();
+                            let statusClass = 'text-sm px-3 py-1 rounded-full';  // Ukuran font kecil dan bentuk lengkung
+
+                            // Tentukan warna latar belakang dan teks berdasarkan status
+                            if (status === 'DIVERIFIKASI') {
+                                statusClass += ' bg-white text-green-500'; // Latar belakang putih, teks hijau
+                            } else if (status === 'TIDAK VALID') {
+                                statusClass += ' bg-white text-red-500'; // Latar belakang putih, teks merah
+                            } else if (status === 'BELUM DIVERIFIKASI') {
+                                statusClass += ' bg-white text-yellow-500'; // Latar belakang putih, teks kuning
+                            }
+
+                            return `<span class="${statusClass}">${status}</span>`;
+                        }
 
                     },
                     {
@@ -88,16 +103,51 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            return '<form action="{{ route('absensi.destroy', '') }}/' + row.id + '" method="POST" class="inline">' +
+                            return '<form action="{{ route('absensi.destroy', '') }}/' + row.id + '" method="POST" class="inline" id="deleteForm-' + row.id + '">' +
                                 '@csrf' +
                                 '@method('DELETE')' +
-                                '<button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg">Hapus</button>' +
+                                '<button type="button" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg" onclick="confirmDelete(' + row.id + ')">Hapus</button>' +
                                 '</form>';
                         }
                     }
                 ]
             });
         });
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data ini akan dihapus secara permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim permintaan AJAX untuk menghapus data
+                    fetch('/absensi/' + id, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Dihapus!', 'Data telah dihapus.', 'success');
+                                // Perbarui tabel atau hapus baris
+                                $('#data-absensi').DataTable().ajax.reload();
+                            } else {
+                                Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus data.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire('Terjadi Kesalahan!', 'Coba lagi nanti.', 'error');
+                        });
+                }
+            });
+        }
 
         // Fungsi untuk membuka modal dan menampilkan gambar besar
         function openImageModal(imageUrl) {

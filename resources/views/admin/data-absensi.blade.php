@@ -68,7 +68,22 @@
                 },
                 {
                     data: 'status',
-                    name: 'status'
+                    name: 'status',
+                    render: function (data, type, row) {
+                        const status = data.toUpperCase();
+                        let statusClass = 'text-sm px-3 py-1 rounded-full';  // Ukuran font kecil dan bentuk lengkung
+
+                        // Tentukan warna latar belakang dan teks berdasarkan status
+                        if (status === 'DIVERIFIKASI') {
+                            statusClass += ' bg-white text-green-500'; // Latar belakang putih, teks hijau
+                        } else if (status === 'TIDAK VALID') {
+                            statusClass += ' bg-white text-red-500'; // Latar belakang putih, teks merah
+                        } else if (status === 'BELUM DIVERIFIKASI') {
+                            statusClass += ' bg-white text-yellow-500'; // Latar belakang putih, teks kuning
+                        }
+
+                        return `<span class="${statusClass}">${status}</span>`;
+                    }
                 },
                 {
                     data: 'aksi',
@@ -83,7 +98,7 @@
         // Fungsi untuk mengubah status absensi
         function updateStatus(id, status) {
             fetch("{{ route('admin.absensi.update-status') }}", {
-                method: 'POST', // Correct the method to POST
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -95,23 +110,24 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     if (data) {
-                        // Swal.fire({
-                        //     title: 'Berhasil!',
-                        //     text: 'Status berhasil diperbarui',
-                        //     icon: 'success',
-                        //     confirmButtonText: 'OK'
-                        // }).then(() => {
-                        $('#data-absensi').DataTable().ajax.reload(); // Muat ulang DataTable
-                        // });
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Status berhasil diperbarui',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#d33' // Warna merah untuk tombol OK
+                        }).then(() => {
+                            $('#data-absensi').DataTable().ajax.reload(); // Muat ulang DataTable
+                        });
                     } else {
-                        // Swal.fire({
-                        //     title: 'Gagal!',
-                        //     text: data.message,
-                        //     icon: 'error',
-                        //     confirmButtonText: 'OK'
-                        // });
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#d33' // Warna merah untuk tombol OK
+                        });
                     }
                 })
                 .catch(xhr => {
@@ -119,5 +135,145 @@
                     alert('Terjadi kesalahan saat memperbarui status.');
                 });
         }
+
+        // Fungsi untuk memverifikasi absensi
+        function verifyRecord(id) {
+            fetch("{{ route('admin.absensi.update-status') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: 'DIVERIFIKASI'
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Absensi telah diverifikasi.',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#d33' // Warna merah untuk tombol OK
+                        }).then(() => {
+                            $('#data-absensi').DataTable().ajax.reload(); // Muat ulang DataTable
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat memverifikasi.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#d33' // Warna merah untuk tombol OK
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Terjadi kesalahan:', error);
+                    alert('Terjadi kesalahan saat memverifikasi.');
+                });
+        }
+
+        // Fungsi untuk menandai absensi sebagai tidak valid
+        function markInvalid(id) {
+            fetch("{{ route('admin.absensi.update-status') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: 'TIDAK VALID'
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Absensi ditandai tidak valid.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#d33' // Warna merah untuk tombol OK
+                        }).then(() => {
+                            $('#data-absensi').DataTable().ajax.reload(); // Muat ulang DataTable
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat menandai tidak valid.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#d33' // Warna merah untuk tombol OK
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Terjadi kesalahan:', error);
+                    alert('Terjadi kesalahan saat menandai tidak valid.');
+                });
+        }
+
+        function deleteRecord(id) {
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin menghapus data ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Tidak',
+                confirmButtonColor: '#3085d6', // Warna tombol "Ya"
+                cancelButtonColor: '#d33', // Warna tombol "Tidak"
+                reverseButtons: true, // Mengubah posisi tombol "Tidak" dan "Ya"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("{{ route('admin.data-absensi.destroy', ':id') }}".replace(':id', id), {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Data berhasil dihapus.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#3085d6' // Tombol OK berwarna biru
+                                }).then(() => {
+                                    $('#data-absensi').DataTable().ajax.reload(); // Muat ulang DataTable
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat menghapus data.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#d33' // Tombol OK berwarna merah
+                                });
+                            }
+                        })
+                        .catch(xhr => {
+                            console.error('Terjadi kesalahan:', xhr);
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat menghapus data.',
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#d33' // Tombol OK berwarna merah
+                            });
+                        });
+                }
+            });
+        }
+
+
     </script>
 </x-app-layout>

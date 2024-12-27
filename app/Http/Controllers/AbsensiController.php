@@ -134,15 +134,14 @@ class AbsensiController extends Controller
                     : '-';
             })
             ->addColumn('aksi', function ($row) {
-                return "<form action='" . route('absensi.destroy', $row->id) . "' method='POST' class='inline'>" .
-                    "<input type='hidden' name='_token' value='" . csrf_token() . "'>" .
-                    "<input type='hidden' name='_method' value='DELETE'>" .
-                    "<button type='submit' class='px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg'>Hapus</button>" .
-                    "</form>" .
-                    "<button class='px-3 py-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg' onclick='updateStatus({$row->id}, \"verifikasi\")'>Verifikasi</button>" .
-                    "<button class='px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg' onclick='updateStatus({$row->id}, \"tidak valid\")'>Tidak Valid</button>";
+                return '
+                    <div class="flex gap-2 justify-center">
+                        <button onclick="deleteRecord(' . $row->id . ')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Hapus</button>
+                        <button onclick="verifyRecord(' . $row->id . ')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">Verifikasi</button>
+                        <button onclick="markInvalid(' . $row->id . ')" class="bg-gray-500 text-white px-2 py-1 rounded text-xs hover:bg-gray-600">Tidak Valid</button>
+                    </div>
+                ';
             })
-
             ->rawColumns([
                 'foto_pagar_depan',
                 'foto_lorong_lab',
@@ -152,35 +151,37 @@ class AbsensiController extends Controller
             ])
             ->make(true);
     }
-
-
-    public function updateStatus(Request $request)
+    public function destroy($id)
     {
-        // Validasi input
-        // $request->validate([
-        //     'id' => 'required',
-        //     'status' => 'required',
-        // ]);
-
         // Cari data absensi berdasarkan ID
-        $absensi = Absensi::find($request->id);
+        $absensi = Absensi::find($id);
 
         if ($absensi) {
-            // Perbarui status absensi
-            if ($request->status == 'verifikasi') {
-                $absensi->status = 'diverifikasi';
-            } else {
-                $absensi->status = 'tidak valid';
-            }
-            $absensi->save();  // Simpan perubahan
+            // Hapus foto-foto yang terkait dengan absensi
+            File::delete(public_path($absensi->foto_pagar_depan));
+            File::delete(public_path($absensi->foto_lorong_lab));
+            File::delete(public_path($absensi->foto_ruang_tengah));
+            File::delete(public_path($absensi->foto_pagar_belakang));
+
+            // Hapus data absensi dari database
+            $absensi->delete();
 
             // Respons sukses
             return response()->json(['success' => true]);
         }
 
-        // // Jika absensi tidak ditemukan
-        return response()->json([
-            'success' => false,
-        ]);
     }
+
+
+    public function updateStatus(Request $request)
+    {
+        $absensi = Absensi::find($request->id);
+        if ($absensi) {
+            $absensi->status = $request->status;
+            $absensi->save();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan']);
+    }
+
 }
